@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+    <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+            crossorigin="anonymous"
+    />
+
+    <style>
+        .app-container {
+            height: 100vh;
+            width: 100%;
+        }
+        .complete {
+            text-decoration: line-through;
+        }
+
+
+
+    </style>
+</head>
+<body>
+<div
+        class="app-container d-flex align-items-center justify-content-center flex-column"
+        ng-app="myApp"
+        ng-controller="myController"
+>
+    <h3>Todo App</h3>
+    <div class="d-flex align-items-center mb-3" style="display: inline-block;">
+        <form class="form-group mr-3 mb-0" style="display: inline-block;" th:action="@{/todo/register.do}" th:object="${todo}" method="post">
+            <div style="display: inline-block">
+                <input th:field="*{item}" type="text" class="form-control" style="vertical-align:middle" placeholder="할 일을 적어주세요"/>
+            </div>
+            <div style="display: inline-block">
+                <button type="submit" class="btn btn-primary mr-3">Save</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="table-wrapper" th:object="${todo}" method="post">
+        <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th>No.</th>
+                <th>Todo item</th>
+                <th>status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${not #lists.isEmpty(toDoList)}" th:each="todo,index : ${toDoList}">
+                <td th:text="${index.index}" th:style="${todo.status == 'Y' ? 'text-decoration: line-through;': 'text-decoration: none;'}"></td> <!-- no-->
+                <td th:text="${todo.item}" th:style="${todo.status == 'Y' ? 'text-decoration: line-through;': 'text-decoration: none;'}"></td> <!--item-->
+                <td th:text="${todo.status}"></td> <!-- status-->
+                <td>
+                    <button type="button" class="btn btn-danger" th:onclick="deleteToDoList([[  ${todo.idx}]], [[${index.index} ]])">Delete</button>
+                    <button type="button" class="btn btn-success" th:onclick="updateToDoList([[ ${todo.idx}]], [[${index.index} ]])">Finished</button>
+                </td> <!-- action-->
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        function updateToDoList(idx, index) {
+            if (confirm(index + "번 할 일을 하셨나요?")) {
+                var uri = /*[[ @{/todo/update.do} ]]*/null;
+                var html = "";
+
+                html += '<form name="dataForm" action="'+uri+'" method="post">';
+                html += '<input type="hidden" name="idx" value="'+idx+'" />';
+                html += '</form>';
+
+                $("body").append(html);
+                document.dataForm.submit();
+            }
+        }
+
+        function deleteToDoList(idx, index) {
+            if (confirm(index + "번 할 일을 삭제할까요?")) {
+                var uri = /*[[ @{/todo/delete.do} ]]*/null;
+                var html = "";
+
+                html += '<form name="dataForm" action="'+uri+'" method="post">';
+                html += '<input type="hidden" name="idx" value="'+idx+'" />';
+                html += '</form>';
+
+                $("body").append(html);
+                document.dataForm.submit();
+            }
+        }
+
+        /*]]>*/
+    </script>
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"
+    ></script>
+    <script
+            src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"
+    ></script>
+    <script
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"
+    ></script>
+</body>
+</html>

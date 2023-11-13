@@ -1,5 +1,6 @@
 package com.example.todolist.domain;
 
+import com.example.todolist.dto.DoDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Do {
+public class Do extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,11 +20,21 @@ public class Do {
     private String content;
 
     @Column(nullable = false)
-    private Boolean status;
+    @Builder.Default
+    private Boolean status=false;
 
     @Builder
-    public void Do(String content, Boolean status) {
+    public Do(String content, Boolean status) {
         this.content = content;
         this.status = status;
     }
+
+    public void changeContent(String content){
+        this.content=content;
+    }
+
+    public void changeStatus(boolean status){
+        this.status=status;
+    }
+
 }
