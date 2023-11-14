@@ -20,7 +20,7 @@ import java.util.Date;
 public abstract class BaseEntity {
 
     @CreatedDate
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime regDate;
 
     @LastModifiedDate

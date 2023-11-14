@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -20,11 +21,11 @@ public class Do extends BaseEntity{
     private String content;
 
     @Column(nullable = false)
-    @Builder.Default
-    private Boolean status=false;
+    private Boolean status;
 
     @Builder
-    public Do(String content, Boolean status) {
+    public Do(Long id,String content, Boolean status) {
+        this.id=id;
         this.content = content;
         this.status = status;
     }

@@ -5,8 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class DoDto {
     private Long id;
@@ -15,13 +17,15 @@ public class DoDto {
     private boolean status;
 
     @Builder
-    public DoDto(String content, boolean status) {
+    public DoDto(Long id,String content, boolean status) {
+        this.id=id;
         this.content = content;
         this.status = status;
     }
 
     public Do toEntity(){
         return Do.builder()
+                .id(id)
                 .content(content)
                 .status(status)
                 .build();
@@ -29,6 +33,7 @@ public class DoDto {
 
     public DoDto toDto(Do todo){
         return DoDto.builder()
+                .id(todo.getId())
                 .content(todo.getContent())
                 .status(todo.getStatus())
                 .build();
