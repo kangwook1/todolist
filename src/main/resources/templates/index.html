@@ -64,7 +64,14 @@
 </head>
 <body>
 <div class="container">
-    <h1>투두리스트</h1>
+    <div class="row">
+        <div class="col-md-8">
+            <h1>투두리스트</h1>
+        </div>
+        <div class="col-md-4 text-right">
+            <a href="/signup" class="btn btn-primary">회원가입</a>
+        </div>
+    </div>
     <form th:action="@{/register}" th:object="${dodto}" method="post">
         <div class="form-group">
             <input type="text" th:field="*{content}" class="form-control" placeholder="오늘의 할 일을 적어보세요!"/>

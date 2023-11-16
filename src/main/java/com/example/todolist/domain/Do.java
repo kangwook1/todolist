@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.catalina.User;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
@@ -15,6 +16,7 @@ public class Do extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "do_id")
     private Long id;
 
     @Column(nullable = false)
@@ -23,15 +25,17 @@ public class Do extends BaseEntity{
     @Column(nullable = false)
     private Boolean status;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @Builder
-    public Do(Long id,String content, Boolean status) {
+    public Do(Long id, String content, Boolean status, Member member) {
         this.id=id;
         this.content = content;
         this.status = status;
-    }
-
-    public void changeContent(String content){
-        this.content=content;
+        this.member=member;
     }
 
     public void changeStatus(boolean status){

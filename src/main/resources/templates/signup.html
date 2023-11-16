@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <!-- 부트스트랩 CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+    <!-- 커스텀 CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: auto;
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .btn-primary {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>회원가입</h1>
+    <form th:action="@{/signupMember}" th:object="${memberDto}" method="post">
+        <div class="form-group">
+            <label for="loginId">로그인 ID:</label>
+            <input type="text" id="loginId" th:field="*{loginId}" class="form-control" placeholder="로그인 ID를 입력하세요"/>
+        </div>
+        <div class="form-group">
+            <label for="password">비밀번호:</label>
+            <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력하세요"/>
+        </div>
+        <div class="form-group">
+            <label for="email">이메일:</label>
+            <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="이메일을 입력하세요"/>
+        </div>
+        <div class="form-group">
+            <label for="nickname">닉네임:</label>
+            <input type="text" id="nickname" th:field="*{nickname}" class="form-control" placeholder="닉네임을 입력하세요"/>
+        </div>
+        <button type="submit" class="btn btn-primary">가입하기</button>
+    </form>
+</div>
+</body>
+</html>
