@@ -1,13 +1,10 @@
 package com.example.todolist.domain;
 
-import com.example.todolist.dto.DoDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.apache.catalina.User;
-import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter

@@ -2,7 +2,9 @@ package com.example.todolist.service;
 
 
 import com.example.todolist.domain.Do;
-import com.example.todolist.dto.DoDto;
+import com.example.todolist.dto.AddReqDoDto;
+import com.example.todolist.dto.ReadResDoDto;
+import com.example.todolist.dto.UpdateReqDoDto;
 import com.example.todolist.repository.DoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -16,28 +18,28 @@ import java.util.List;
 public class DoService {
     private final DoRepository doRepository;
 
-    public List<DoDto> getTodoList(){
+    public List<ReadResDoDto> getTodoList(){
         List<Do> all=doRepository.findAll();
 
-        List<DoDto> todoList=new ArrayList<>();
+        List<ReadResDoDto> todoList=new ArrayList<>();
 
         for(Do todo : all){
-            DoDto dodto=new DoDto();
+            ReadResDoDto dodto=new ReadResDoDto();
             todoList.add(dodto.toDto(todo));
         }
         return todoList;
     }
-    public void saveDo(DoDto dodto){
+    public void saveDo(AddReqDoDto dodto){
         doRepository.save(dodto.toEntity());
     }
 
     @Transactional
-    public void updateDo(DoDto doDto){
-        Do ett=doRepository.findById(doDto.toEntity().getId()).get();
+    public void updateDoById(Long id){
+        Do ett=doRepository.findById(id).get();
         ett.changeStatus(true);
     }
-    public void deleteDo(DoDto doDto){
-        doRepository.delete(doDto.toEntity());
+    public void deleteDoById(Long id){
+        doRepository.deleteById(id);
     }
 
 }

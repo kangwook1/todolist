@@ -10,29 +10,21 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DoDto {
+public class ReadResDoDto {
     private Long id;
     @NotBlank
     private String content;
     private boolean status;
 
     @Builder
-    public DoDto(Long id,String content, boolean status) {
+    public ReadResDoDto(Long id, String content, boolean status) {
         this.id=id;
         this.content = content;
         this.status = status;
     }
 
-    public Do toEntity(){
-        return Do.builder()
-                .id(id)
-                .content(content)
-                .status(status)
-                .build();
-    }
-
-    public DoDto toDto(Do todo){
-        return DoDto.builder()
+    public ReadResDoDto toDto(Do todo){
+        return ReadResDoDto.builder()
                 .id(todo.getId())
                 .content(todo.getContent())
                 .status(todo.getStatus())

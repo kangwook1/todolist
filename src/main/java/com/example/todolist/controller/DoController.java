@@ -1,17 +1,18 @@
 package com.example.todolist.controller;
 
-import com.example.todolist.dto.DoDto;
+import com.example.todolist.dto.AddReqDoDto;
+import com.example.todolist.dto.ReadResDoDto;
+import com.example.todolist.dto.UpdateReqDoDto;
 import com.example.todolist.service.DoService;
 import groovy.util.logging.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @Log4j
 public class DoController {
     private final DoService doService;
@@ -22,29 +23,26 @@ public class DoController {
     }
 
     @GetMapping(value = "/")
-    public String todoList(Model model){
-        List<DoDto> todoList=doService.getTodoList();
-        model.addAttribute("todoList",todoList);
-        model.addAttribute("dodto",new DoDto());
-        return "index";
+    public ResponseEntity<List<ReadResDoDto>> todoList(){
+        return ResponseEntity.ok(doService.getTodoList());
     }
 
-    @PostMapping(value = "/register")
-    public String saveDo(DoDto dodto){
+    @PostMapping(value = "/")
+    public ResponseEntity<AddReqDoDto> saveDo(AddReqDoDto dodto){
         doService.saveDo(dodto);
-        return "redirect:/";
+        return ResponseEntity.ok(dodto);
     }
 
-    @PostMapping(value = "/update")
-    public String updateDo(DoDto dodto){
-        doService.updateDo(dodto);
-        return "redirect:/";
+    @PatchMapping(value = "/{id}")
+    public ResponseEntity<?> updateDo(@PathVariable Long id){
+        doService.updateDoById(id);
+        return ResponseEntity.ok(id);
     }
 
-    @PostMapping(value = "/delete")
-    public String deleteDo(DoDto dodto){
-        doService.deleteDo(dodto);
-        return "redirect:/";
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<?> deleteDo(@PathVariable Long id){
+        doService.deleteDoById(id);
+        return ResponseEntity.ok().build();
     }
 
 }
