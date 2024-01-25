@@ -1,6 +1,7 @@
 package com.example.todolist.security;
 
-import com.example.todolist.domain.Member;
+import com.example.todolist.domain.RefreshToken;
+import com.example.todolist.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -8,7 +9,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,10 +21,12 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
     private final MemberDetailsService memberDetailsService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     // 되도록 시크릿키는 유추하기 어렵게 복잡하게 설정하는 것이 좋다.
     private String secretKey = "Adfaoidalksdhcpxzjhpdhfpdkoxaodfid";
-    private long validTokenTime = 30 * 60 * 1000L; // 테스트를 수월하게 하기위해 30분으로 설정
+    private static long ACCESS_TOKEN_EXPIRE_TIME = 1 * 60 * 1000L; // 테스트를 수월하게 하기위해 1분으로 설정
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1 * 24 * 60 * 60 * 1000L;    // 1일
 
     /*
         시크릿키를 인코딩한 뒤 결과값을 String형태로 반환하여 시크릿키에 저장.
@@ -42,16 +44,31 @@ public class JwtTokenProvider {
         로그인이 정상적으로 수행되면 username만 토큰에 저장한 뒤 클라이언트로 보내준다.password는 보안상 jwt에 저장하지 않는다.
         클라이언트는 인증이 필요한 request를 보낼때 토큰을 같이 보내면 된다. 그러면 별도의 인증과정을 거치지않고 토큰의 유효여부,조작여부만 검사한다.
      */
-    public String createToken(String loginId, String role) {
+    public String createAccessToken(String loginId, String role) {
+        //subject는 주제로 제목이라고 보면 된다.제목에 loginId를 넣는다.
         Claims claims = Jwts.claims().setSubject(loginId);
         claims.put("role", role); // 정보는 key/value 쌍으로 저장됩니다.
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims) // 정보 저장(클레임 저장)
                 .setIssuedAt(now) // 토큰 발행 시간
-                .setExpiration(new Date(now.getTime() + validTokenTime)) // 토큰 유효 시간
+                .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME)) // 토큰 유효 시간
                 .signWith(SignatureAlgorithm.HS256, secretKey)  // 사용할 암호화 알고리즘
                 .compact();
+    }
+    public String createRefreshToken(String loginId) {
+        Claims claims = Jwts.claims().setSubject(loginId);
+        Date now = new Date();
+        String refreshToken= Jwts.builder()
+                .setClaims(claims) // 정보 저장(클레임 저장)
+                .setIssuedAt(now) // 토큰 발행 시간
+                .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME)) // 토큰 유효 시간
+                .signWith(SignatureAlgorithm.HS256, secretKey)  // 사용할 암호화 알고리즘
+                .compact();
+        RefreshToken redis=new RefreshToken(loginId,refreshToken);
+        refreshTokenRepository.save(redis);
+
+        return refreshToken;
     }
      /*
         토큰에서 인증정보를 가져오는 메소드.
@@ -62,7 +79,7 @@ public class JwtTokenProvider {
      // JWT 토큰에서 인증 정보 조회
      public Authentication getAuthentication(String token) {
          UserDetails userDetails = memberDetailsService.loadUserByUsername(this.getUserLoginId(token));
-         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+         return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), "", userDetails.getAuthorities());
      }
 
      /*
@@ -72,7 +89,7 @@ public class JwtTokenProvider {
          return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
      }
     // Request 의 Header 에서 token 값을 가져옵니다. "Authorization" : "TOKEN값'
-    public String resolveToken(HttpServletRequest request) {
+    public String resolveAccessToken(HttpServletRequest request) {
         return request.getHeader("Authorization");
     }
      /*

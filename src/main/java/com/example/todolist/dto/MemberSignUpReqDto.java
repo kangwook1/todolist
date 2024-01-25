@@ -7,7 +7,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 public class MemberSignUpReqDto {
     private String loginId;
     private String password;

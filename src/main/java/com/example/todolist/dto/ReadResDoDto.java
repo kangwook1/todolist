@@ -15,12 +15,14 @@ public class ReadResDoDto {
     @NotBlank
     private String content;
     private boolean status;
+    private Long memberId;
 
     @Builder
-    public ReadResDoDto(Long id, String content, boolean status) {
+    public ReadResDoDto(Long id, String content, boolean status,Long memberId) {
         this.id=id;
         this.content = content;
         this.status = status;
+        this.memberId=memberId;
     }
 
     public ReadResDoDto toDto(Do todo){
@@ -28,6 +30,7 @@ public class ReadResDoDto {
                 .id(todo.getId())
                 .content(todo.getContent())
                 .status(todo.getStatus())
+                .memberId(todo.getMember().getId())
                 .build();
     }
 }

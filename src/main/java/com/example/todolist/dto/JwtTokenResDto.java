@@ -7,10 +7,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class JwtTokenResDto {
-    private String token;
+    private String accessToken;
+    private String refreshToken;
+
 
     @Builder
-    public JwtTokenResDto(String token) {
-        this.token = token;
+    public JwtTokenResDto(String accessToken, String refreshToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 }

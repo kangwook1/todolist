@@ -38,11 +38,7 @@ public class MemberController {
 
     @PostMapping(value = "/login")
     public ResponseEntity<?> login(MemberSignInReqDto memberSignInReqDto){
-        log.info("start");
-        String token= memberService.login(memberSignInReqDto);
-        JwtTokenResDto JwtToken= JwtTokenResDto.builder()
-                .token(token)
-                .build();
-        return ResponseEntity.ok(JwtToken);
+        JwtTokenResDto jwtToken=memberService.login(memberSignInReqDto);
+        return ResponseEntity.ok(jwtToken);
     }
 }

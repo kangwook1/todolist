@@ -17,6 +17,9 @@ import java.util.List;
 
 @Entity
 @Getter
+//아무런 매개변수가 없는 생성자를 생성하되 다른 패키지에 소속된 클래스는 접근을 불허한다 라는 뜻이다.
+// 프록시 객체를 사용하기 위해서 JPA 구현체는, 실제 엔티티의 기본 생성자를 통해 프록시 객체를 생성하는데,
+// 이 때 접근 권한이 private이면 프록시 객체를 생성할 수 없는 것이다.
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity implements UserDetails {
 
@@ -41,6 +44,8 @@ public class Member extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    //영속성 전이는 one to many에만 가능(cascade), 따라서 양방향을 매핑하고 cascade를 쓸건지 단방향을 하고 수동으로 할건지 고민
+    //수동으로 할때 onDelete 어노테이션으로 할 수 있다.
     @OneToMany(mappedBy = "member",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Do> doList=new ArrayList<>();
 
