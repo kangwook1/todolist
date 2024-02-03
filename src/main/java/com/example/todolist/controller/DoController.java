@@ -40,7 +40,7 @@ public class DoController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> deleteDo(@PathVariable Long id){
         doService.deleteDoById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(id);
     }
 
 }

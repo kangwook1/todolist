@@ -58,14 +58,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         else{
-            // Access Token이 유효하지 않을 때 403 에러와 함께 메시지를 JSON으로 클라이언트에 전송
-            sendErrorResponse(response, "FORBIDDEN", "Invalid Access Token",403);
+            // Access Token이 유효하지 않을 때 401 에러와 함께 메시지를 JSON으로 클라이언트에 전송
+            sendErrorResponse(response, "Unauthorized", "Invalid Access Token",401);
             return;
         }
         filterChain.doFilter(request, response);
     }
     private void sendErrorResponse(HttpServletResponse response, String error, String message, int status) throws IOException {
-       //응답 상태코드에 403을 나타내고 json으로 보냄.
+       //응답 상태코드에 status를 json으로 보냄.
         response.setStatus(status);
         response.setContentType("application/json");
         //json으로 보낼 body에 해당하는 포맷을 설정함.

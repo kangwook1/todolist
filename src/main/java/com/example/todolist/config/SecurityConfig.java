@@ -48,6 +48,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorizeRequest ->authorizeRequest
                         .requestMatchers(new MvcRequestMatcher(introspector,"/member/**")).permitAll()
+                        .requestMatchers(new MvcRequestMatcher(introspector,"/auth/reissue")).permitAll()
                         //스프링 시큐리티는 자동으로 Role_접두어를 붙여준다.
                         .requestMatchers(new MvcRequestMatcher(introspector,"/do/**")).hasRole("USER")
                         .anyRequest().authenticated())
