@@ -1,4 +1,4 @@
-package com.example.todolist.dto;
+package com.example.todolist.dto.response;
 
 import com.example.todolist.domain.Do;
 import jakarta.validation.constraints.NotBlank;
@@ -8,9 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
-public class ReadResDoDto {
+public class ReadDoResDto {
     private Long id;
     @NotBlank
     private String content;
@@ -18,15 +17,15 @@ public class ReadResDoDto {
     private Long memberId;
 
     @Builder
-    public ReadResDoDto(Long id, String content, boolean status,Long memberId) {
+    public ReadDoResDto(Long id, String content, boolean status, Long memberId) {
         this.id=id;
         this.content = content;
         this.status = status;
         this.memberId=memberId;
     }
 
-    public ReadResDoDto toDto(Do todo){
-        return ReadResDoDto.builder()
+    public ReadDoResDto toDto(Do todo){
+        return ReadDoResDto.builder()
                 .id(todo.getId())
                 .content(todo.getContent())
                 .status(todo.getStatus())

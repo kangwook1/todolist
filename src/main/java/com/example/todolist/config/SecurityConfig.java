@@ -36,6 +36,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
                 .requestMatchers(PathRequest.toH2Console());
+
     }
 
     /*스프링 시큐리티 3.0이상 버전에선 h2.console.enabled=true로 설정해놓으면 서블릿 컨텍스트에 h2-console이 등록되어

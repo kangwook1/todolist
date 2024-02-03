@@ -1,4 +1,4 @@
-package com.example.todolist.dto;
+package com.example.todolist.dto.request;
 
 import com.example.todolist.domain.Member;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
+@NoArgsConstructor
 public class MemberSignUpReqDto {
     private String loginId;
     private String password;

@@ -26,7 +26,7 @@ public class JwtTokenProvider {
     // 되도록 시크릿키는 유추하기 어렵게 복잡하게 설정하는 것이 좋다.
     private String secretKey = "Adfaoidalksdhcpxzjhpdhfpdkoxaodfid";
     private static long ACCESS_TOKEN_EXPIRE_TIME = 1 * 60 * 1000L; // 테스트를 수월하게 하기위해 1분으로 설정
-    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1 * 24 * 60 * 60 * 1000L;    // 1일
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1 * 60 * 60 * 1000L;    // 1시간
 
     /*
         시크릿키를 인코딩한 뒤 결과값을 String형태로 반환하여 시크릿키에 저장.
@@ -88,9 +88,13 @@ public class JwtTokenProvider {
      public String getUserLoginId(String token) {
          return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
      }
-    // Request 의 Header 에서 token 값을 가져옵니다. "Authorization" : "TOKEN값'
+    // Request 의 Header 에서 token 값을 가져옵니다. "Authorization" : "Bearer TOKEN값'
     public String resolveAccessToken(HttpServletRequest request) {
         return request.getHeader("Authorization");
+    }
+
+    public String resolveRefreshToken(HttpServletRequest request) {
+        return request.getHeader("Refresh-Token");
     }
      /*
         토큰의 조작여부와 유효여부를 판단하는 메소드.
@@ -98,9 +102,9 @@ public class JwtTokenProvider {
         Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token)를 통해 조작여부를 판단한다.
         만약 조작이 의심되면 예외를 던진다. (+ parser()는 deprecated 됨)
      */
-     public boolean validateToken(String jwtToken) {
+     public boolean validateToken(String token) {
          try {
-             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
+             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
              return !claims.getBody().getExpiration().before(new Date());
          } catch (Exception e) {
              return false;

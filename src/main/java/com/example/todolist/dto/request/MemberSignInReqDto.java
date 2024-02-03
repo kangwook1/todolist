@@ -1,10 +1,10 @@
-package com.example.todolist.dto;
+package com.example.todolist.dto.request;
 
 import com.example.todolist.domain.Member;
 import lombok.*;
 
 @Getter
-@Setter
+@NoArgsConstructor
 public class MemberSignInReqDto {
     private String loginId;
     private String password;

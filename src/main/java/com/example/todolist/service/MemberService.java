@@ -1,9 +1,9 @@
 package com.example.todolist.service;
 
 import com.example.todolist.domain.Member;
-import com.example.todolist.dto.JwtTokenResDto;
-import com.example.todolist.dto.MemberSignInReqDto;
-import com.example.todolist.dto.MemberSignUpReqDto;
+import com.example.todolist.dto.response.JwtTokenResDto;
+import com.example.todolist.dto.request.MemberSignInReqDto;
+import com.example.todolist.dto.request.MemberSignUpReqDto;
 import com.example.todolist.repository.MemberRepository;
 import com.example.todolist.security.JwtTokenProvider;
 import jakarta.transaction.Transactional;
@@ -48,4 +48,6 @@ public class MemberService {
                 .build();
         return token;
     }
+
+
 }

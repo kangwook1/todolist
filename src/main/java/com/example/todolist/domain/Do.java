@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+//기본생성자가 필요한 이유는 Reflection api를 이용해 객체를 생성해놓고 동적으로 필드 값 매핑을 한다.
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Do extends BaseEntity{
 
