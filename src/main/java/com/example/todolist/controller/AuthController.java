@@ -24,5 +24,13 @@ public class AuthController {
             .build();
     }
 
+    @PostMapping(value = "/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request){
+        String accessToken=request.getHeader("Authorization").substring(7);
+        authService.logout(accessToken);
+        return ResponseEntity.ok()
+                .build();
+    }
+
 
 }

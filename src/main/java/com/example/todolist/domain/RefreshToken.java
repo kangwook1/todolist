@@ -7,7 +7,7 @@ import org.springframework.data.redis.core.RedisHash;
 //Redis Lettuce를 사용하기위해 @RedisHash 어노테이션 써야한다.
 //value는 redis key 값으로 사용된다
 //redis 저장소의 key로는 {value}:{@Id 어노테이션을 붙여준 값}이 저장된다.
-@RedisHash(value = "Token",timeToLive = 1 * 24 * 60 * 60 * 1000L) //1일
+@RedisHash(value = "Token",timeToLive = 1  * 60 * 60 * 1000L) //1시간
 @Getter
 public class RefreshToken {
 

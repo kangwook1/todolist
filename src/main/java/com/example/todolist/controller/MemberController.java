@@ -4,11 +4,13 @@ import com.example.todolist.dto.response.JwtTokenResDto;
 import com.example.todolist.dto.request.MemberSignInReqDto;
 import com.example.todolist.dto.request.MemberSignUpReqDto;
 import com.example.todolist.service.MemberService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,8 +31,14 @@ public class MemberController {
         return "signup";
     }
     */
+    /*
+        모든 요청은 프론트 컨트롤러인 디스패처 서블릿을 통해 컨트롤러로 전달된다.
+        @valid는 controller 메소드의 객체를 만들어주는 ArgumentResolver에 의해 처리된다.
+        따라서 기본적으로 컨트롤러에서만 작동한다.
+        다른 계층에서 파라미터를 검증하기 위해서는 @validated를 써야한다.
+     */
     @PostMapping(value = "/join")
-    public ResponseEntity<?> join(@RequestBody MemberSignUpReqDto memberSignUpReqDto){
+    public ResponseEntity<?> join(@RequestBody @Valid MemberSignUpReqDto memberSignUpReqDto){
          memberService.join(memberSignUpReqDto);
          return ResponseEntity.ok(memberSignUpReqDto);
     }

@@ -50,7 +50,7 @@ public class Member extends BaseEntity implements UserDetails {
     private List<Do> doList=new ArrayList<>();
 
     public void addUserAuthority(){
-        this.role=Role.Role_USER;
+        this.role=Role.ROLE_USER;
     }
     public void passwordEncode(PasswordEncoder passwordEncoder){
         this.password=passwordEncoder.encode(password);

@@ -65,8 +65,8 @@ public class JwtTokenProvider {
                 .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME)) // 토큰 유효 시간
                 .signWith(SignatureAlgorithm.HS256, secretKey)  // 사용할 암호화 알고리즘
                 .compact();
-        RefreshToken redis=new RefreshToken(loginId,refreshToken);
-        refreshTokenRepository.save(redis);
+        RefreshToken redisRefreshToken=new RefreshToken(loginId,refreshToken);
+        refreshTokenRepository.save(redisRefreshToken);
 
         return refreshToken;
     }
@@ -81,6 +81,11 @@ public class JwtTokenProvider {
          UserDetails userDetails = memberDetailsService.loadUserByUsername(this.getUserLoginId(token));
          return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), "", userDetails.getAuthorities());
      }
+
+    public Long getExpiration(String token) {
+       return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getExpiration().getTime();
+
+    }
 
      /*
         토큰을 받아 sub(username)값을 추출하는 메소드.
