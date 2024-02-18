@@ -18,7 +18,7 @@ public enum ErrorCode {
     INVALID_LOGIN_ID(HttpStatus.BAD_REQUEST,"아이디가 틀렸습니다."),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST,"비밀번호가 틀렸습니다."),
     /* 401 UNAUTHORIZED : 비인증 사용자 */
-    INVALID_TOKEN(HttpStatus.UNAUTHORIZED,"토큰이 유효하지 않습니다."),
+    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED,"refresh 토큰이 유효하지 않습니다."),
 
     /* 409 CONFLICT : 리소스 충돌 */
     DUPLICATED_LOGIN_ID(HttpStatus.CONFLICT,"아이디가 중복입니다.");

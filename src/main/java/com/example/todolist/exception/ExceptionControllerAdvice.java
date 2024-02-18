@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // 모든 컨트롤러가 실행하는 동안 발생할 수 있는 예외를 일괄적으로 처리하는 어노테이션
-// ResponseEntityExceptionHandler을 상속해 기존 예외처리를 override해야 충돌이 안일어남
+// ResponseEntityExceptionHandler을 상속해 기존 예외처리를 override해야 일관성 있는 응답 가능(아니면 스프링 자체적인 에러 객체 반환)
 @RestControllerAdvice
 public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
     //설정 해둔 exception들을 처리할 수 있다.
@@ -43,8 +43,12 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<?> handleCustomException(CustomException e){
+       ErrorResponse errorResponse=ErrorResponse.builder()
+               .status(e.getErrorCode().getStatus().toString())
+               .message(e.getErrorCode().getMessage())
+               .build();
         return ResponseEntity.status(e.getErrorCode().getStatus())
-                .body(e.getErrorCode().getMessage());
+                .body(errorResponse);
     }
 
 }

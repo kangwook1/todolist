@@ -24,8 +24,8 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public Long join(MemberSignUpReqDto reqDto){
-        memberRepository.findByLoginId(reqDto.getLoginId())
-                .orElseThrow(()-> new CustomException(ErrorCode.DUPLICATED_LOGIN_ID)) ;
+        if(memberRepository.findByLoginId(reqDto.getLoginId()).isPresent())
+               throw new CustomException(ErrorCode.DUPLICATED_LOGIN_ID);
         Member member=reqDto.toEntity();
         member.passwordEncode(passwordEncoder);
         member.addUserAuthority();
@@ -37,7 +37,7 @@ public class MemberService {
         Member member= memberRepository.findByLoginId(memberSignInReqDto.getLoginId())
                 .orElseThrow(()->new CustomException(ErrorCode.INVALID_LOGIN_ID));
         if(!passwordEncoder.matches(memberSignInReqDto.getPassword(),member.getPassword())){
-            throw new MemberException(ErrorCode.INVALID_PASSWORD);
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
         JwtTokenResDto token=JwtTokenResDto.builder()
                 .accessToken(jwtTokenProvider.createAccessToken(member.getLoginId(),member.getRole().name()))

@@ -3,6 +3,8 @@ package com.example.todolist.service;
 import com.example.todolist.domain.AccessToken;
 import com.example.todolist.domain.Member;
 import com.example.todolist.domain.RefreshToken;
+import com.example.todolist.exception.CustomException;
+import com.example.todolist.exception.ErrorCode;
 import com.example.todolist.repository.AccessTokenRepository;
 import com.example.todolist.repository.MemberRepository;
 import com.example.todolist.repository.RefreshTokenRepository;
@@ -36,11 +38,9 @@ public class AuthService {
         // 1
         if(refreshToken!=null && jwtTokenProvider.validateToken(refreshToken)){
             String loginId= jwtTokenProvider.getUserLoginId(refreshToken);
-            Optional<RefreshToken> redisToken= refreshTokenRepository.findById(loginId);
-            if(redisToken.isEmpty())
-                throw new IllegalArgumentException("refreshToken이 유효하지 않습니다.");
             //2
-            RefreshToken redisRefreshToken=redisToken.get();
+            RefreshToken redisRefreshToken= refreshTokenRepository.findById(loginId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REFRESH_TOKEN));
             //3
             if(refreshToken.equals(redisRefreshToken.getRefreshToken())){
                 Member member=memberRepository.findByLoginId(loginId).get();
@@ -48,11 +48,11 @@ public class AuthService {
                 return jwtTokenProvider.createAccessToken(member.getLoginId(),member.getRole().name());
             }
             else{
-                throw new IllegalArgumentException("refreshToken이 동일하지 않습니다.");
+                throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
             }
         }
         else{
-            throw new IllegalArgumentException("refreshToken이 유효하지 않습니다.");
+            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
     }
 
