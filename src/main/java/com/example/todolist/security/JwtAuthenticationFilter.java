@@ -1,6 +1,8 @@
 package com.example.todolist.security;
 
 import com.example.todolist.domain.AccessToken;
+import com.example.todolist.exception.CustomException;
+import com.example.todolist.exception.ErrorCode;
 import com.example.todolist.repository.AccessTokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -51,11 +53,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
         if(accessToken !=null && jwtTokenProvider.validateToken(accessToken)){
-            Optional<AccessToken> optional=accessTokenRepository.findById(accessToken);
-            if(optional.isPresent()){
-                // Access Token이 블랙리스트에 등록돼있어 403 에러와 함께 메시지를 JSON으로 클라이언트에 전송
-                sendErrorResponse(response, "Forbbiden", "Invalid Access Token",403);
-                return;
+            //로그아웃 검증(access 토큰이 있으면 로그아웃한 것이므로 불통과)
+            if(accessTokenRepository.findById(accessToken).isPresent()){
+                throw new CustomException(ErrorCode.USER_LOGOUT);
             }
             else{
                 Authentication authentication=jwtTokenProvider.getAuthentication(accessToken);
@@ -73,19 +73,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         else{
             // Access Token이 유효하지 않을 때 401 에러와 함께 메시지를 JSON으로 클라이언트에 전송
-            sendErrorResponse(response, "Unauthorized", "Invalid Access Token",401);
-            return;
+            throw new  CustomException(ErrorCode.INVALID_ACCESS_TOKEN);
         }
         filterChain.doFilter(request, response);
-    }
-    private void sendErrorResponse(HttpServletResponse response, String error, String message, int status) throws IOException {
-       //응답 상태코드에 status를 json으로 보냄.
-        response.setStatus(status);
-        response.setContentType("application/json");
-        //json으로 보낼 body에 해당하는 포맷을 설정함.
-        response.getWriter().write(String.format("{\"error\": \"%s\", \"message\": \"%s\", \"status\": %d}", error, message, status));
-        //클라이언트에게 response을 보냄.
-        response.getWriter().flush();
     }
 }
 

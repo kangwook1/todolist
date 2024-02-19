@@ -1,7 +1,9 @@
 package com.example.todolist.config;
 
+import com.example.todolist.exception.CustomAccessDeniedHandler;
 import com.example.todolist.repository.AccessTokenRepository;
 import com.example.todolist.security.JwtAuthenticationFilter;
+import com.example.todolist.security.JwtExceptionFilter;
 import com.example.todolist.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -28,6 +30,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final AccessTokenRepository accessTokenRepository;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -48,20 +51,23 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
 
         http
-                .authorizeHttpRequests(authorizeRequest ->authorizeRequest
-                        .requestMatchers(new MvcRequestMatcher(introspector,"/member/**")).permitAll()
-                        .requestMatchers(new MvcRequestMatcher(introspector,"/auth/reissue")).permitAll()
+                .authorizeHttpRequests(authorizeRequest -> authorizeRequest
+                        .requestMatchers(new MvcRequestMatcher(introspector, "/member/**")).permitAll()
+                        .requestMatchers(new MvcRequestMatcher(introspector, "/auth/reissue")).permitAll()
                         //스프링 시큐리티는 자동으로 Role_접두어를 붙여준다.
-                        .requestMatchers(new MvcRequestMatcher(introspector,"/**")).hasRole("USER")
+                        .requestMatchers(new MvcRequestMatcher(introspector, "/**")).hasRole("USER")
                         .anyRequest().authenticated())
-                .sessionManagement(sessionManagement->sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 /*
                     UsernamePasswordAuthenticationFilter 전에 JwtAutenticationFilter를 실행
                     UsernamePasswordAuthenticationFilter는 form형식의 인증을 할 때 인증정보가 없거나 틀리면 로그인페이지로 리다이렉트하는 필터이다.
                     따라서 jwt인증필터를 이 필터 앞에서 실행시켜 토큰에 문제가 있으면 예외를 던져야한다.
                     jwt 토큰을 사용하면 UsernamePasswordAuthenticaitionFilter 이후의 필터는 통과된 것을 본다.
                 */
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider,accessTokenRepository), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, accessTokenRepository), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class)
+                .exceptionHandling()
+                        .accessDeniedHandler(customAccessDeniedHandler);
 
 
 

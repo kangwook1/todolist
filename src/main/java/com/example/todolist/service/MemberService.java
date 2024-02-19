@@ -24,6 +24,7 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public Long join(MemberSignUpReqDto reqDto){
+        //로그인 아이디 중복검사
         if(memberRepository.findByLoginId(reqDto.getLoginId()).isPresent())
                throw new CustomException(ErrorCode.DUPLICATED_LOGIN_ID);
         Member member=reqDto.toEntity();
@@ -34,6 +35,7 @@ public class MemberService {
     }
 
     public JwtTokenResDto login(MemberSignInReqDto memberSignInReqDto){
+        //아이디,비밀번호 유효성 검사
         Member member= memberRepository.findByLoginId(memberSignInReqDto.getLoginId())
                 .orElseThrow(()->new CustomException(ErrorCode.INVALID_LOGIN_ID));
         if(!passwordEncoder.matches(memberSignInReqDto.getPassword(),member.getPassword())){

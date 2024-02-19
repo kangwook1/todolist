@@ -19,7 +19,11 @@ public enum ErrorCode {
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST,"비밀번호가 틀렸습니다."),
     /* 401 UNAUTHORIZED : 비인증 사용자 */
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED,"refresh 토큰이 유효하지 않습니다."),
+    INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED,"access 토큰이 유효하지 않습니다."),
+    USER_LOGOUT(HttpStatus.UNAUTHORIZED,"로그아웃한 유저입니다. 다시 로그인 해주세요."),
 
+    /* FORBIDDEN : 권한이 없는 사용자 */
+    UNAUTHORIZED_USER(HttpStatus.FORBIDDEN,"권한이 없는 유저입니다."),
     /* 409 CONFLICT : 리소스 충돌 */
     DUPLICATED_LOGIN_ID(HttpStatus.CONFLICT,"아이디가 중복입니다.");
 
