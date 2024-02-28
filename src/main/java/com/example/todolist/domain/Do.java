@@ -1,16 +1,14 @@
 package com.example.todolist.domain;
 
-import com.example.todolist.dto.DoDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.apache.catalina.User;
-import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
+//기본생성자가 필요한 이유는 Reflection api를 이용해 객체를 생성해놓고 동적으로 필드 값 매핑을 한다.
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Do extends BaseEntity{
 
