@@ -25,7 +25,7 @@ public class MemberService {
 
     public Long join(MemberSignUpReqDto reqDto){
         //로그인 아이디 중복검사
-        if(memberRepository.findByLoginId(reqDto.getLoginId()).isPresent())
+        if(checkLoginIdDuplicated(reqDto.getLoginId()))
                throw new CustomException(ErrorCode.DUPLICATED_LOGIN_ID);
         Member member=reqDto.toEntity();
         member.passwordEncode(passwordEncoder);
@@ -35,7 +35,7 @@ public class MemberService {
     }
 
     public JwtTokenResDto login(MemberSignInReqDto memberSignInReqDto){
-        //아이디,비밀번호 유효성 검사
+        //아이디,비밀번호 유효성 검사(스프링 시큐리티에서 다 해주지만,jwt는 usernameAuthenticationd을 직접 넣으므로 구현해야한다.)
         Member member= memberRepository.findByLoginId(memberSignInReqDto.getLoginId())
                 .orElseThrow(()->new CustomException(ErrorCode.INVALID_LOGIN_ID));
         if(!passwordEncoder.matches(memberSignInReqDto.getPassword(),member.getPassword())){
@@ -46,6 +46,10 @@ public class MemberService {
                 .refreshToken(jwtTokenProvider.createRefreshToken(member.getLoginId()))
                 .build();
         return token;
+    }
+
+    public boolean checkLoginIdDuplicated(String loginId){
+        return memberRepository.existsMemberByLoginId(loginId);
     }
 
 

@@ -22,8 +22,11 @@ public enum ErrorCode {
     INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED,"access 토큰이 유효하지 않습니다."),
     USER_LOGOUT(HttpStatus.UNAUTHORIZED,"로그아웃한 유저입니다. 다시 로그인 해주세요."),
 
-    /* FORBIDDEN : 권한이 없는 사용자 */
+    /* 403 FORBIDDEN : 권한이 없는 사용자 */
     UNAUTHORIZED_USER(HttpStatus.FORBIDDEN,"권한이 없는 유저입니다."),
+
+    /* 404 NOT_FOUNT : 존재하지 않는 리소스 */
+    NOT_EXIST_USER(HttpStatus.NOT_FOUND,"존재하지 않는 유저입니다."),
     /* 409 CONFLICT : 리소스 충돌 */
     DUPLICATED_LOGIN_ID(HttpStatus.CONFLICT,"아이디가 중복입니다.");
 

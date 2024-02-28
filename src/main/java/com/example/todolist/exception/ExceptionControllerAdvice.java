@@ -20,7 +20,6 @@ import java.util.List;
 public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
     //설정 해둔 exception들을 처리할 수 있다.
 
-    //binding result 공부하기
     /*
         MethodArgumentNotValidException는 유효성 검사에서 실패하면 나타나는 예외로 bindingReult에 에러를 담는다.
         bindingResult는 유효성검사에 실패해 예외가 발생하면 담아주는 객체이다.

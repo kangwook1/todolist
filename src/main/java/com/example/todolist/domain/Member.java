@@ -55,6 +55,7 @@ public class Member extends BaseEntity implements UserDetails {
     public void passwordEncode(PasswordEncoder passwordEncoder){
         this.password=passwordEncoder.encode(password);
     }
+
     @Builder
     public Member(String loginId,String password, String email, String nickname) {
         this.loginId=loginId;

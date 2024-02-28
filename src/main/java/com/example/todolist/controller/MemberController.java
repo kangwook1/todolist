@@ -25,12 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
     private final MemberService memberService;
 
-    /*@GetMapping(value = "/signup")
-    public String signup(Model model){
-        model.addAttribute("memberDto",new MemberDto());
-        return "signup";
-    }
-    */
     /*
         모든 요청은 프론트 컨트롤러인 디스패처 서블릿을 통해 컨트롤러로 전달된다.
         @valid는 controller 메소드의 객체를 만들어주는 ArgumentResolver에 의해 처리된다.
