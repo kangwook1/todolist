@@ -11,25 +11,14 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ReadDoResDto {
     private Long id;
-    @NotBlank
     private String content;
     private boolean status;
-    private Long memberId;
 
     @Builder
-    public ReadDoResDto(Long id, String content, boolean status, Long memberId) {
+    public ReadDoResDto(Long id, String content, boolean status) {
         this.id=id;
         this.content = content;
         this.status = status;
-        this.memberId=memberId;
     }
 
-    public ReadDoResDto toDto(Do todo){
-        return ReadDoResDto.builder()
-                .id(todo.getId())
-                .content(todo.getContent())
-                .status(todo.getStatus())
-                .memberId(todo.getMember().getId())
-                .build();
-    }
 }

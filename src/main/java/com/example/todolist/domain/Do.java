@@ -29,8 +29,7 @@ public class Do extends BaseEntity{
     private Member member;
 
     @Builder
-    public Do(Long id, String content, Boolean status, Member member) {
-        this.id=id;
+    public Do(String content, Boolean status, Member member) {
         this.content = content;
         this.status = status;
         this.member=member;

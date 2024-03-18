@@ -54,15 +54,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if(accessToken !=null && jwtTokenProvider.validateToken(accessToken)){
             //로그아웃 검증(access 토큰이 있으면 로그아웃한 것이므로 불통과)
-            if(accessTokenRepository.findById(accessToken).isPresent()){
+            if(accessTokenRepository.existsById(accessToken)){
                 throw new CustomException(ErrorCode.USER_LOGOUT);
             }
             else{
                 Authentication authentication=jwtTokenProvider.getAuthentication(accessToken);
             /*
             contextHolder에 인증객체저장. 인가과정을 거친 후 해당 인증객체는 삭제된다.
-            그다음,http session에 authentication을 저장한다.
-            이후, SecurityContextPersistenceFilter에서 authentication을 삭제한다.
+            그다음,http session에 authentication을 저장한다.//일반적인 세션 작동(jwt는 안이럼)
+            이후, SecurityContextPersistenceFilter에서 authentication을 삭제한다.//securityContext를 제거
             jwt는 stateless 설정을 했기때문에 jSessionId를 관리하지 않아서, 세션은 응답이 끝나면 사라지게 된다.
             메모리 저장소에 용도로 잠시 사용하고 버리는 용도이다.
             session을 사용하지 않기로 돼있지만 권한처리를 위해 어쩔 수 없이 사용한다.

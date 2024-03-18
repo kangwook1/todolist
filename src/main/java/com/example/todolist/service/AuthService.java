@@ -30,8 +30,7 @@ public class AuthService {
     /*
         1.요청 헤더에서 가져온 refreshToken의 유효성을 검증한다.
         2.검증이 됐으면, Redis에서 key를 loginId로 갖고 있는 refreshToken을 조회한다.
-        3.redis에서 조회한 refreshToken과 요청으로 받은 refreshToken이 동일한지 검증한다.
-        4.동일하다면 loginId로 유저정보를 조회해 accessToken을 발급한다.
+        3.loginId로 유저정보를 조회해 accessToken을 발급한다.
     */
 
     public String reissueAccessToken(String refreshToken){
@@ -39,17 +38,12 @@ public class AuthService {
         if(refreshToken!=null && jwtTokenProvider.validateToken(refreshToken)){
             String loginId= jwtTokenProvider.getUserLoginId(refreshToken);
             //2
-            RefreshToken redisRefreshToken= refreshTokenRepository.findById(loginId)
-                    .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REFRESH_TOKEN));
+            if(!refreshTokenRepository.existsById(loginId))
+                   throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
+            Member member=memberRepository.findByLoginId(loginId).get();
             //3
-            if(refreshToken.equals(redisRefreshToken.getRefreshToken())){
-                Member member=memberRepository.findByLoginId(loginId).get();
-                //4
-                return jwtTokenProvider.createAccessToken(member.getLoginId(),member.getRole().name());
-            }
-            else{
-                throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
-            }
+            return jwtTokenProvider.createAccessToken(member.getLoginId(),member.getRole().name());
+
         }
         else{
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
@@ -57,18 +51,16 @@ public class AuthService {
     }
 
     /*
-        1.요청 헤더에서 가져온 accessToken의 유효성을 검증한다.(JwtAuthenticationFilter에서 이미 검증함. 여기서까지 할 필요 x)
-        2.검증이 됐으면, accessToken에서 loginId를 가져온다.
-        3.loginId를 키 값으로 가지는 refreshToken을 redis에서 조회하고 있다면 삭제한다.
-        4.acceessToken을 키값으로 저장하고 남은 유효기간을 설정한다.
+        1.accessToken에서 loginId를 가져온다.
+        2.loginId를 키 값으로 가지는 refreshToken을 redis에서 조회하고 있다면 삭제한다.
+        3.acceessToken을 키값으로 저장하고 남은 유효기간을 설정한다.
     */
     public void logout(String accessToken){
-            //2
+            //1
             String loginId= jwtTokenProvider.getUserLoginId(accessToken);
-            // 3
+            // 2
             refreshTokenRepository.deleteById(loginId);
-            // 4
-            Long pastExpiration=jwtTokenProvider.getExpiration(accessToken);
+            // 3
             // 남은 만료 기한= 만료 기한 - 현재 시간
             Long expiration= jwtTokenProvider.getExpiration(accessToken)-new Date().getTime();
             AccessToken redisAccessToken=new AccessToken(accessToken,expiration);

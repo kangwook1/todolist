@@ -1,16 +1,14 @@
 package com.example.todolist.controller;
 
-import com.example.todolist.dto.response.JwtTokenResDto;
-import com.example.todolist.dto.request.MemberSignInReqDto;
-import com.example.todolist.dto.request.MemberSignUpReqDto;
+import com.example.todolist.dto.request.SignUpMemberReqDto;
+import com.example.todolist.dto.response.LoginJwtTokenResDto;
+import com.example.todolist.dto.request.SignInMemberReqDto;
 import com.example.todolist.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,14 +30,14 @@ public class MemberController {
         다른 계층에서 파라미터를 검증하기 위해서는 @validated를 써야한다.
      */
     @PostMapping(value = "/join")
-    public ResponseEntity<?> join(@RequestBody @Valid MemberSignUpReqDto memberSignUpReqDto){
-         memberService.join(memberSignUpReqDto);
-         return ResponseEntity.ok(memberSignUpReqDto);
+    public ResponseEntity<?> join(@RequestBody @Valid SignUpMemberReqDto signUpMemberReqDto){
+         memberService.join(signUpMemberReqDto);
+         return ResponseEntity.ok(signUpMemberReqDto);
     }
 
     @PostMapping(value = "/login")
-    public ResponseEntity<?> login(@RequestBody MemberSignInReqDto memberSignInReqDto){
-        JwtTokenResDto jwtToken=memberService.login(memberSignInReqDto);
+    public ResponseEntity<?> login(@RequestBody SignInMemberReqDto signInMemberReqDto){
+        LoginJwtTokenResDto jwtToken=memberService.login(signInMemberReqDto);
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken.getAccessToken())
                 .header("Refresh-Token", jwtToken.getRefreshToken())

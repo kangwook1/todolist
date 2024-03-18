@@ -25,7 +25,7 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
         bindingResult는 유효성검사에 실패해 예외가 발생하면 담아주는 객체이다.
         bindingResult가 없으면 400오류가 발생해 컨트롤러를 호출하지않고 오류페이지로 이동한다.
      */
-    @Override
+    @Override//아직 커스텀하지 않았다. 면접준비
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
