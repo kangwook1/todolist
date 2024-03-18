@@ -18,8 +18,7 @@ import java.util.List;
 @Entity
 @Getter
 //아무런 매개변수가 없는 생성자를 생성하되 다른 패키지에 소속된 클래스는 접근을 불허한다 라는 뜻이다.
-// 프록시 객체를 사용하기 위해서 JPA 구현체는, 실제 엔티티의 기본 생성자를 통해 프록시 객체를 생성하는데,
-// 이 때 접근 권한이 private이면 프록시 객체를 생성할 수 없는 것이다.
+// 프록시 객체를 사용하기 위해서 JPA 구현체는, 실제 엔티티를 상속받아 만들어지기 때문에 사용하려면 private는 안된다.
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity implements UserDetails {
 

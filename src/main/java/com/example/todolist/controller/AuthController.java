@@ -19,8 +19,8 @@ public class AuthController {
     public ResponseEntity<?> reissue(HttpServletRequest request){
         String refreshToken=request.getHeader("Refresh-Token");
         String accessToken=authService.reissueAccessToken(refreshToken);
-    return ResponseEntity.ok()
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+        return ResponseEntity.ok()
+            .header(HttpHeaders.AUTHORIZATION, accessToken)
             .build();
     }
 

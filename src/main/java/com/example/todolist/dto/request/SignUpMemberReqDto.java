@@ -6,11 +6,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @NoArgsConstructor
-public class MemberSignUpReqDto {
+public class SignUpMemberReqDto {
 
     @NotBlank
     @Pattern(message = "아이디는 5~10자의 영어,숫자로 이루어져야 합니다.", regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{5,10}$")

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
-//@MappedSuperclass는 실제 테이블과 매핑되지 않는다. 단순히 매핑 정보를 상속할 목적으로만 사용된다.
+//@MappedSuperclass는 상속한 엔티티에게 매핑 정보를 상속하게 된다.
 @MappedSuperclass
 /*
     엔티티를 DB에 적용하기 전,후에 커스텀 콜백을 요청할 수 있는 어노테이션이다.
