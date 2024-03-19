@@ -47,12 +47,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (accessToken != null && accessToken.startsWith("Bearer ")) {
-            accessToken = accessToken.substring(7);  // "Bearer "를 제거하여 실제 토큰만 추출
+        if (!accessToken.startsWith("Bearer ")) {
+           filterChain.doFilter(request,response);
+           return;
         }
+        accessToken = accessToken.substring(7);  // "Bearer "를 제거하여 실제 토큰만 추출
 
 
-        if(accessToken !=null && jwtTokenProvider.validateToken(accessToken)){
+        if(jwtTokenProvider.validateToken(accessToken)){
             //로그아웃 검증(access 토큰이 있으면 로그아웃한 것이므로 불통과)
             if(accessTokenRepository.existsById(accessToken)){
                 throw new CustomException(ErrorCode.USER_LOGOUT);

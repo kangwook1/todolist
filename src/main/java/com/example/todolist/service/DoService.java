@@ -26,7 +26,7 @@ public class DoService {
     @Transactional(readOnly = true)//조회용 메소드는 변경감지를 제외해 데이터변경을 최소화한다.
     public List<ReadDoResDto> getTodoList(String loginId){
         Member member=memberRepository.findByLoginId(loginId).get();
-        List<Do> all=doRepository.findAllByMember(member);
+        List<Do> all=doRepository.findAllByMember(member).get();
         List<ReadDoResDto> todoList=new ArrayList<>();
 
         for(Do todo : all){

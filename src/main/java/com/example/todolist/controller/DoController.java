@@ -22,7 +22,7 @@ public class DoController {
 
     @GetMapping(value = "/")
     public ResponseEntity<List<ReadDoResDto>> todoList(Principal principal){
-        String loginId=principal.toString();
+        String loginId=principal.getName();//toString은 보통 디버깅 목적,getName이 아이디반환
         return ResponseEntity.ok(doService.getTodoList(loginId));
     }
 
