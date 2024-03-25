@@ -1,5 +1,6 @@
 package com.example.todolist.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
@@ -17,6 +18,7 @@ public class RefreshToken {
     private String loginId;
     private String refreshToken;
 
+    @Builder
     public RefreshToken(String loginId, String refreshToken) {
         this.loginId = loginId;
         this.refreshToken = refreshToken;

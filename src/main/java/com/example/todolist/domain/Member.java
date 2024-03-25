@@ -33,7 +33,7 @@ public class Member extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -48,6 +48,10 @@ public class Member extends BaseEntity implements UserDetails {
     @OneToMany(mappedBy = "member",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Do> doList=new ArrayList<>();
 
+
+    public void changePassword(String password){
+        this.password=password;
+    }
     public void addUserAuthority(){
         this.role=Role.ROLE_USER;
     }

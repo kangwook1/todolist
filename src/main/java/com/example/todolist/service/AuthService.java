@@ -2,20 +2,18 @@ package com.example.todolist.service;
 
 import com.example.todolist.domain.AccessToken;
 import com.example.todolist.domain.Member;
-import com.example.todolist.domain.RefreshToken;
 import com.example.todolist.exception.CustomException;
 import com.example.todolist.exception.ErrorCode;
 import com.example.todolist.repository.AccessTokenRepository;
 import com.example.todolist.repository.MemberRepository;
 import com.example.todolist.repository.RefreshTokenRepository;
 import com.example.todolist.security.JwtTokenProvider;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -63,7 +61,10 @@ public class AuthService {
             // 3
             // 남은 만료 기한= 만료 기한 - 현재 시간
             Long expiration= jwtTokenProvider.getExpiration(accessToken)-new Date().getTime();
-            AccessToken redisAccessToken=new AccessToken(accessToken,expiration);
+            AccessToken redisAccessToken=AccessToken.builder()
+                    .accessToken(accessToken)
+                    .expiration(expiration)
+                    .build();
             accessTokenRepository.save(redisAccessToken);
 
     }

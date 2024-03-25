@@ -1,6 +1,5 @@
 package com.example.todolist.security;
 
-import com.example.todolist.domain.AccessToken;
 import com.example.todolist.exception.CustomException;
 import com.example.todolist.exception.ErrorCode;
 import com.example.todolist.repository.AccessTokenRepository;
@@ -10,17 +9,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.Arrays;
 
 
 /*
@@ -36,16 +31,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final AccessTokenRepository accessTokenRepository;
 
+    // url이 포함된 경로에 대해서는 JWT 필터를 적용하지 않고 무시
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+
+        String[] excludePath = {"/member", "/auth/reissue", "/mail"};
+        String path = request.getRequestURI();
+        return Arrays.stream(excludePath).anyMatch(path::startsWith);
+    }
+
+
     @Override
     //OncePerRequestFilter을 상속받으면 doFilterInternal을 써야한다.
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String accessToken=jwtTokenProvider.resolveAccessToken(request);
-
-        // url이 포함된 경로에 대해서는 JWT 필터를 적용하지 않고 무시
-        if (request.getServletPath().contains("/member") || request.getServletPath().contains("/auth/reissue")){
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         if (!accessToken.startsWith("Bearer ")) {
            filterChain.doFilter(request,response);

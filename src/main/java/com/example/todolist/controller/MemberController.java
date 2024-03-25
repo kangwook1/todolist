@@ -39,7 +39,7 @@ public class MemberController {
     public ResponseEntity<?> login(@RequestBody SignInMemberReqDto signInMemberReqDto){
         LoginJwtTokenResDto jwtToken=memberService.login(signInMemberReqDto);
         return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken.getAccessToken())
+                .header(HttpHeaders.AUTHORIZATION,  jwtToken.getAccessToken())
                 .header("Refresh-Token", jwtToken.getRefreshToken())
                 .body(jwtToken);
     }

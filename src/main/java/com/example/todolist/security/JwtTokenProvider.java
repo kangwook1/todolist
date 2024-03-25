@@ -65,7 +65,10 @@ public class JwtTokenProvider {
                 .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME)) // 토큰 유효 시간
                 .signWith(SignatureAlgorithm.HS256, secretKey)  // 사용할 암호화 알고리즘
                 .compact();
-        RefreshToken redisRefreshToken=new RefreshToken(loginId,refreshToken);
+        RefreshToken redisRefreshToken= RefreshToken.builder()
+                .loginId(loginId)
+                .refreshToken(refreshToken)
+                .build();
         refreshTokenRepository.save(redisRefreshToken);
 
         return refreshToken;

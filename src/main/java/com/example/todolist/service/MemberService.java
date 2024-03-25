@@ -8,11 +8,11 @@ import com.example.todolist.exception.CustomException;
 import com.example.todolist.exception.ErrorCode;
 import com.example.todolist.repository.MemberRepository;
 import com.example.todolist.security.JwtTokenProvider;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -27,6 +27,9 @@ public class MemberService {
         //로그인 아이디 중복검사
         if(checkLoginIdDuplicated(reqDto.getLoginId()))
                throw new CustomException(ErrorCode.DUPLICATED_LOGIN_ID);
+        //이메일 중복검사
+        if(checkEmailDuplicated(reqDto.getEmail()))
+            throw new CustomException(ErrorCode.DUPLICATED_LOGIN_ID);
         Member member=reqDto.toEntity();
         member.passwordEncode(passwordEncoder);
         member.addUserAuthority();
@@ -34,6 +37,7 @@ public class MemberService {
         return member.getId();
     }
 
+    @Transactional(readOnly = true)
     public LoginJwtTokenResDto login(SignInMemberReqDto signInMemberReqDto){
         //로그인폼을 이용해 필터에서 토큰을 인증객체를 만드는게 아니고,
         //서비스에서 토큰을 만들어 반환하기때문에 그전에 유효성 검사를 하는 것이다.
@@ -51,6 +55,9 @@ public class MemberService {
 
     public boolean checkLoginIdDuplicated(String loginId){
         return memberRepository.existsMemberByLoginId(loginId);
+    }
+    public boolean checkEmailDuplicated(String email){
+        return memberRepository.existsMemberByLoginId(email);
     }
 
 

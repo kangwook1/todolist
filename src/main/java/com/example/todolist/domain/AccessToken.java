@@ -1,5 +1,6 @@
 package com.example.todolist.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
@@ -16,6 +17,7 @@ public class AccessToken {
     @TimeToLive
     private Long expiration;
 
+    @Builder
     public AccessToken(String accessToken, Long expiration) {
         this.accessToken = accessToken;
         this.expiration = expiration;

@@ -10,5 +10,7 @@ public interface MemberRepository extends JpaRepository<Member,Long>, QuerydslPr
 
     Optional<Member> findByLoginId(String loginId);
 
+    Optional<Member> findByEmail(String email);
+
     boolean existsMemberByLoginId(String loginId);
 }
